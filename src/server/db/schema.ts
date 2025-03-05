@@ -2,7 +2,7 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
 import { sql } from "drizzle-orm";
-import { index, int, sqliteTableCreator, text } from "drizzle-orm/sqlite-core";
+import { index, int, sqliteTableCreator, text, integer, sqliteTable } from "drizzle-orm/sqlite-core";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -26,5 +26,25 @@ export const posts = createTable(
   },
   (example) => ({
     nameIndex: index("name_idx").on(example.name),
+  })
+);
+
+export const audioFingerprints = createTable(
+  "audio_fingerprints",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    name: text("name").notNull(),
+    fingerprint: text("fingerprint").notNull(),
+    duration: integer("duration").notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    nameIndex: index("audio_name_idx").on(table.name),
+    fingerprintIndex: index("audio_fingerprint_idx").on(table.fingerprint),
   })
 );
